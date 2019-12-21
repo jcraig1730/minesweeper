@@ -17,6 +17,19 @@ module.exports = {
           }
         },
         exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        loader: "style-loader"
+      },
+      {
+        test: /\.css$/,
+        loader: "css-loader",
+        query: {
+          modules: {
+            localIdentName: "[name]_[local]_[hash:base64:5]"
+          }
+        }
       }
     ]
   }
