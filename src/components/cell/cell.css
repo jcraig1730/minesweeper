@@ -1,9 +1,63 @@
 .cell {
   width: 30px;
   height: 30px;
-  background: #888;
+  background: rgb(175, 171, 171);
   border: 1px solid black;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.7em;
+  font-weight: 800;
+  color: green;
+}
+
+.clearedCell {
+  width: 30px;
+  height: 30px;
+  background: rgb(233, 233, 233);
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7em;
+  font-weight: 800;
+  color: green;
+}
+
+.touching1 {
+  color: rgb(32, 92, 69);
+}
+
+.touching2 {
+  color: blue;
+}
+
+.touching3 {
+  color: rgb(139, 139, 50);
+}
+
+.touching4 {
+  color: orange;
+}
+
+.touching5 {
+  color: brown;
+}
+
+touching6 {
+  color: maroon;
+}
+.touching6 {
+  color: rgb(184, 36, 36);
+}
+
+.touching7 {
+  color: rgba(255, 0, 0, 0.87);
+}
+
+.touching8 {
+  color: red;
+}
+.flag {
+  height: 30px;
 }
