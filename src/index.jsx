@@ -7,7 +7,9 @@ import App from "./App.jsx";
 const initialState = {
   mineCount: 10,
   xCount: 10,
-  yCount: 10
+  yCount: 10,
+  board: [],
+  isGameOver: false
 };
 
 ReactDOM.render(

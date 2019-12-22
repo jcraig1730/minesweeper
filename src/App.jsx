@@ -4,12 +4,11 @@ import { useStateValue } from "./state/AppState.jsx";
 import { Gameboard } from "./gameFunctions.js";
 
 export default function App() {
-  const [{ mineCount, xCount, yCount }, dispatch] = useStateValue();
+  const [{ mineCount, xCount, yCount, board }, dispatch] = useStateValue();
   const [isLoading, setIsLoading] = useState(true);
-  const [board, setBoard] = useState();
   useEffect(() => {
-    const board = new Gameboard(10, 10, 10);
-    setBoard(board);
+    const newBoard = new Gameboard(10, 10, 10);
+    dispatch({ type: "UPDATE_BOARD", payload: newBoard });
     setIsLoading(false);
   }, []);
   return <div>{isLoading ? "loading..." : <Board board={board} />}</div>;

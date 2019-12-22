@@ -18,7 +18,8 @@ class Board {
           touching: 0,
           isFlagged: false,
           isQuestioned: false,
-          isClicked: false
+          isClicked: false,
+          id: String(row) + String(col)
         });
         col++;
       }
@@ -82,4 +83,46 @@ class Board {
   }
 }
 
-module.exports = { Gameboard: Board };
+function handleLeftClick(board, target, dispatch) {
+  if (target.isQuestioned || target.isFlagged) return;
+  target.isClicked = true;
+  dispatch({ type: "UPDATE_BOARD", payload: board });
+  if (target.isMine) {
+    if (window) {
+      alert("game over");
+    }
+    dispatch({ type: "GAME_OVER", payload: true });
+  }
+}
+
+function handleRightClick(board, target, dispatch) {
+  if (!target.isClicked && !target.isFlagged && !target.isQuestioned) {
+    target.isFlagged = true;
+    dispatch({ type: "UPDATE_BOARD", payload: board });
+    return;
+  }
+  if (target.isFlagged) {
+    target.isFlagged = false;
+    target.isQuestioned = true;
+    dispatch({ type: "UPDATE_BOARD", payload: board });
+    return;
+  }
+  if (target.isQuestioned) {
+    target.isQuestioned = false;
+    dispatch({ type: "UPDATE_BOARD", payload: board });
+  }
+}
+
+function handleBoardClick(clickData) {
+  const { clickType, board, target, dispatch } = clickData;
+  clickType === "leftClick"
+    ? handleLeftClick(board, target, dispatch)
+    : handleRightClick(board, target, dispatch);
+}
+
+module.exports = {
+  Gameboard: Board,
+  handleBoardClick,
+  handleLeftClick,
+  handleRightClick
+};
