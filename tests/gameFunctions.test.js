@@ -139,7 +139,6 @@ test("Should not allow left click on cell that is questioned or flagged", () => 
 test("Should update an empty cell to be flagged on right click", () => {
   const target = testGameboard.board[0][4];
   const dispatch = jest.fn();
-  console.log(target);
 
   const clickData = {
     clickType: "rightClick",
