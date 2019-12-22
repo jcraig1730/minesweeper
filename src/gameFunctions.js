@@ -84,6 +84,11 @@ class Board {
 }
 
 function handleLeftClick(board, target, dispatch) {
+  if (!target.isMine && target.touching === 0) {
+    clearZeroes(board, target, dispatch);
+    dispatch({ type: "UPDATE_BOARD", payload: board });
+    return;
+  }
   if (target.isQuestioned || target.isFlagged) return;
   target.isClicked = true;
   dispatch({ type: "UPDATE_BOARD", payload: board });
@@ -120,9 +125,33 @@ function handleBoardClick(clickData) {
     : handleRightClick(board, target, dispatch);
 }
 
+function clearZeroes(board, target) {
+  const currentIsZero = target.touching === 0;
+  if (!currentIsZero) return;
+  let [targetRow, targetCol] = target.id.split("");
+  targetRow = Number(targetRow);
+  targetCol = Number(targetCol);
+  for (let row = targetRow - 1; row < targetRow + 2; row++) {
+    for (let col = targetCol - 1; col < targetCol + 2; col++) {
+      if (
+        board.board[row] &&
+        board.board[row][col] &&
+        !board.board[row][col].isClicked &&
+        !board.board[row][col].isMine
+      ) {
+        board.board[row][col].isClicked = true;
+        if (currentIsZero) {
+          clearZeroes(board, board.board[row][col]);
+        }
+      }
+    }
+  }
+}
+
 module.exports = {
   Gameboard: Board,
   handleBoardClick,
   handleLeftClick,
-  handleRightClick
+  handleRightClick,
+  clearZeroes
 };

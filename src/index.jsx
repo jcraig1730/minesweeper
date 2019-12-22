@@ -5,9 +5,9 @@ import { reducer } from "./state/reducers.jsx";
 import App from "./App.jsx";
 
 const initialState = {
-  mineCount: 10,
-  xCount: 10,
-  yCount: 10,
+  mineCount: 5,
+  xCount: 5,
+  yCount: 5,
   board: [],
   isGameOver: false,
   isMouseDown: false,

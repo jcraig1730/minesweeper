@@ -4,9 +4,11 @@ import {
   Gameboard,
   handleBoardClick,
   handleLeftClick,
-  handleRightClick
+  handleRightClick,
+  clearZeroes
 } from "../src/gameFunctions.js";
 import testGameboard from "./testGameboard.js";
+import testboard2 from "./testGameboard2.js";
 
 /* ********************** */
 /* Board Generation Tests */
@@ -216,4 +218,27 @@ test("Should not update a cell that is already marked isClicked on right click",
   };
   handleBoardClick(clickData);
   expect(dispatch).toHaveBeenCalledTimes(0);
+});
+
+test("Should clear all neighboring cells that are touching zero mines when a cell touching zero mines itself is cleared", () => {
+  const target = testboard2.board[0][0];
+  const { board } = testboard2;
+  clearZeroes(testboard2, target);
+  expect(target.isClicked).toBe(true);
+  expect(board[0][1].isClicked).toBe(true);
+  expect(board[1][0].isClicked).toBe(true);
+  expect(board[1][1].isClicked).toBe(true);
+  expect(board[0][2].isClicked).toBe(false);
+  expect(board[1][2].isClicked).toBe(false);
+  expect(board[2][0].isClicked).toBe(false);
+  expect(board[2][1].isClicked).toBe(false);
+
+  const target2 = testboard2.board[2][4];
+  clearZeroes(testboard2, target2);
+  expect(target.isClicked).toBe(true);
+  expect(board[1][4].isClicked).toBe(true);
+  expect(board[1][3].isClicked).toBe(true);
+  expect(board[2][3].isClicked).toBe(true);
+  expect(board[3][3].isClicked).toBe(true);
+  expect(board[3][4].isClicked).toBe(true);
 });
