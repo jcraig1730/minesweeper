@@ -1,5 +1,8 @@
 class Board {
   constructor(xCount, yCount, mineCount) {
+    this.gameOver = false;
+    this.win = false;
+    this.flaggedMines = 0;
     this.xCount = xCount;
     this.yCount = yCount;
     this.mineCount = mineCount;
@@ -78,13 +81,21 @@ class Board {
       })
     );
   }
+
+  checkWin() {
+    return this.minePositions.every(([xCoord, yCoord]) => {
+      return this.board[xCoord][yCoord].isFlagged;
+    });
+  }
 }
 
 function handleLeftClick(board, target, dispatch) {
   if (!target.isMine && target.touching === 0) {
     clearZeroes(target);
     dispatch({ type: "UPDATE_BOARD", payload: board });
-    return;
+  }
+  if (target.isClicked && neighborFlagsEqualTouching(target)) {
+    clearNeighbors(target, dispatch);
   }
   if (target.isQuestioned || target.isFlagged) return;
   target.isClicked = true;
@@ -101,6 +112,10 @@ function handleRightClick(board, target, dispatch) {
   if (!target.isClicked && !target.isFlagged && !target.isQuestioned) {
     target.isFlagged = true;
     dispatch({ type: "UPDATE_BOARD", payload: board });
+    if (board.checkWin()) {
+      board.win = true;
+      dispatch({ type: "GAME_OVER", payload: true });
+    }
     return;
   }
   if (target.isFlagged) {
@@ -124,11 +139,35 @@ function handleBoardClick(clickData) {
 
 function clearZeroes(target) {
   const currentIsZero = target.touching === 0;
-  target.isClicked = true;
+  if (!target.isFlagged && !target.isQuestioned) target.isClicked = true;
   if (!currentIsZero) return;
   target.neighbors.forEach(neighbor => {
     if (!neighbor.isClicked) {
       clearZeroes(neighbor);
+    }
+  });
+}
+
+function neighborFlagsEqualTouching(target) {
+  const totalFlags = target.neighbors.reduce((flagCount, neighbor) => {
+    if (neighbor.isFlagged) {
+      return flagCount + 1;
+    } else {
+      return flagCount + 0;
+    }
+  }, 0);
+  return totalFlags >= target.touching;
+}
+
+function clearNeighbors(target, dispatch) {
+  target.neighbors.forEach(neighbor => {
+    if (!neighbor.isFlagged) {
+      neighbor.isClicked = true;
+      if (neighbor.isMine) {
+        dispatch({ type: "GAME_OVER", payload: true });
+      } else if (neighbor.touching === 0) {
+        clearZeroes(neighbor);
+      }
     }
   });
 }

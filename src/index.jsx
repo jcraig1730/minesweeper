@@ -10,6 +10,7 @@ const initialState = {
   yCount: 5,
   board: [],
   isGameOver: false,
+  isWinner: false,
   isMouseDown: false,
   result: ""
 };
