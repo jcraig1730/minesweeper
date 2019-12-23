@@ -6,7 +6,6 @@ import styles from "./cellRow.css";
 export default function CellRow({ cells }) {
   return (
     <div className={styles.cellRow}>
-      {console.log(styles.cellRow)}
       {cells.map(cell => (
         <Cell cellData={cell} />
       ))}

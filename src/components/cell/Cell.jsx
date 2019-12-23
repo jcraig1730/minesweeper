@@ -16,9 +16,7 @@ export default function Cell({ cellData }) {
     "7": "touching7",
     "8": "touching8"
   };
-  if (!colorMap[String(cellData.touching)]) {
-    console.log(cellData.touching);
-  }
+
   const handleClick = e => {
     const [rowStr, columnStr] = e.currentTarget.id.split("");
     const target = board.board[Number(rowStr)][Number(columnStr)];
