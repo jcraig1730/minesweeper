@@ -101,10 +101,8 @@ function handleLeftClick(board, target, dispatch) {
   target.isClicked = true;
   dispatch({ type: "UPDATE_BOARD", payload: board });
   if (target.isMine) {
-    if (window) {
-      alert("game over");
-    }
     dispatch({ type: "GAME_OVER", payload: true });
+    board.gameOver = true;
   }
 }
 
@@ -114,6 +112,8 @@ function handleRightClick(board, target, dispatch) {
     dispatch({ type: "UPDATE_BOARD", payload: board });
     if (board.checkWin()) {
       board.win = true;
+      board.gameOver = true;
+      dispatch({ type: "SET_WIN", payload: true });
       dispatch({ type: "GAME_OVER", payload: true });
     }
     return;
@@ -132,6 +132,7 @@ function handleRightClick(board, target, dispatch) {
 
 function handleBoardClick(clickData) {
   const { clickType, board, target, dispatch } = clickData;
+  if (board.gameOver) return;
   clickType === "leftClick"
     ? handleLeftClick(board, target, dispatch)
     : handleRightClick(board, target, dispatch);

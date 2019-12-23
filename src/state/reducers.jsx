@@ -25,5 +25,10 @@ export const reducer = (state, action) => {
         ...state,
         isGameOver: action.payload
       };
+    case "SET_WIN":
+      return {
+        ...state,
+        isWinner: action.payload
+      };
   }
 };
