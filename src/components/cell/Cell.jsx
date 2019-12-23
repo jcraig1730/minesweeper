@@ -4,7 +4,7 @@ import { useStateValue } from "../../state/AppState.jsx";
 import { handleBoardClick } from "../../gameFunctions.js";
 
 export default function Cell({ cellData }) {
-  const [{ board }, dispatch] = useStateValue();
+  const [{ board, isGameOver, isWinner }, dispatch] = useStateValue();
   const colorMap = {
     "0": "",
     "1": "touching1",
@@ -22,6 +22,8 @@ export default function Cell({ cellData }) {
     const target = board.board[Number(rowStr)][Number(columnStr)];
     const clickType = e.type === "click" ? "leftClick" : "rightClick";
     handleBoardClick({ clickType, board, target, dispatch });
+    if (isGameOver && !isWinner) {
+    }
   };
   return (
     <div
@@ -33,11 +35,47 @@ export default function Cell({ cellData }) {
       id={cellData.id}
     >
       {cellData.isFlagged ? (
-        <img className={styles.flag} src="./assets/flag.png" alt="" />
+        <img
+          className={styles.flag}
+          src={
+            isGameOver
+              ? cellData.isMine
+                ? "./assets/flag_correct.png"
+                : "./assets/flag_wrong.png"
+              : "./assets/flag.png"
+          }
+          alt=""
+        />
       ) : cellData.isQuestioned ? (
-        <img className={styles.flag} src="./assets/question.png" alt="" />
+        <img
+          className={styles.flag}
+          src={
+            isGameOver
+              ? cellData.isMine
+                ? "./assets/question_correct.png"
+                : "./assets/question_wrong.png"
+              : "./assets/question.png"
+          }
+          alt=""
+        />
+      ) : cellData.isMine ? (
+        <img
+          className={styles.flag}
+          src={
+            isGameOver
+              ? cellData.isClicked
+                ? "./assets/mine_clicked.png"
+                : "./assets/mine.png"
+              : ""
+          }
+          alt=""
+        />
       ) : cellData.isClicked ? (
-        cellData.touching
+        cellData.touching > 0 ? (
+          cellData.touching
+        ) : (
+          ""
+        )
       ) : null}
     </div>
   );

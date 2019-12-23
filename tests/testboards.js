@@ -21,6 +21,22 @@ const addNeighborsToTest = ({ board }) => {
   );
 };
 
+const addPropertyToCells = ({ board }, [key, val]) => {
+  board.forEach(row =>
+    row.forEach(cell => {
+      cell[key] = val;
+    })
+  );
+};
+const checkWin = () => {
+  return this.minePositions.every(([xCoord, yCoord]) => {
+    return this.board[xCoord][yCoord].isFlagged;
+  });
+};
+
+addPropertyToCells(testboard1, ["checkWin", checkWin]);
+addPropertyToCells(testboard2, ["checkWin", checkWin]);
+
 addNeighborsToTest(testboard1);
 addNeighborsToTest(testboard2);
 
