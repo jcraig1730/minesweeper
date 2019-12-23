@@ -1,0 +1,11 @@
+html {
+  height: 95vh;
+  width: 95vw;
+}
+body {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}

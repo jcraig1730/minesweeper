@@ -9,7 +9,9 @@ const initialState = {
   xCount: 10,
   yCount: 10,
   board: [],
-  isGameOver: false
+  isGameOver: false,
+  isMouseDown: false,
+  result: ""
 };
 
 ReactDOM.render(
