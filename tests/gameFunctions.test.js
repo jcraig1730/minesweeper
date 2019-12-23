@@ -1,7 +1,16 @@
 import React from "react";
 import { shallow, mount, render } from "enzyme";
-import { Gameboard } from "../src/gameFunctions.js";
+import {
+  Gameboard,
+  handleBoardClick,
+  handleLeftClick,
+  handleRightClick
+} from "../src/gameFunctions.js";
+import testGameboard from "./testGameboard.js";
 
+/* ********************** */
+/* Board Generation Tests */
+/* ********************** */
 test("Shoud return a new board with the correct number of rows", () => {
   const gameboard = new Gameboard(10, 10, 5);
   const { board } = gameboard;
@@ -48,4 +57,163 @@ test("Should increment touching property for each adjacent position of a mine", 
   afterUpdate.forEach((afterUpdate, idx) => {
     expect(beforeUpdate[idx] + 1).toBe(afterUpdate);
   });
+});
+
+/* *********************** */
+/* Gameplay Function Tests */
+/* *********************** */
+test("Should set isClicked true on left click when cell not flagged or questioned", () => {
+  const target = testGameboard.board[0][1];
+  const dispatch = jest.fn();
+
+  const clickData = {
+    clickType: "leftClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(target.isClicked).toBe(true);
+  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "UPDATE_BOARD",
+    payload: testGameboard
+  });
+});
+
+test("Should end game if a cell with property isMine: true is left clicked", () => {
+  const target = testGameboard.board[0][0];
+  const dispatch = jest.fn();
+
+  const clickData = {
+    clickType: "leftClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(dispatch).toHaveBeenCalledTimes(2);
+  expect(dispatch).toHaveBeenCalledWith({ type: "GAME_OVER", payload: true });
+});
+
+test("Should not allow left click on cell that is questioned or flagged", () => {
+  const target = testGameboard.board[0][0];
+  target.isFlagged = true;
+
+  const target2 = testGameboard.board[0][2];
+  target2.isQuestioned = true;
+
+  const dispatch = jest.fn();
+
+  const clickData = {
+    clickType: "leftClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+
+  const clickData2 = {
+    clickType: "leftClick",
+    board: testGameboard,
+    target: target2,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(dispatch).toHaveBeenCalledTimes(0);
+
+  handleBoardClick(clickData2);
+  expect(dispatch).toHaveBeenCalledTimes(0);
+
+  const controlClickData = {
+    clickType: "leftClick",
+    board: testGameboard,
+    target: testGameboard.board[0][3],
+    dispatch
+  };
+
+  handleBoardClick(controlClickData);
+});
+
+test("Should update an empty cell to be flagged on right click", () => {
+  const target = testGameboard.board[0][4];
+  const dispatch = jest.fn();
+  console.log(target);
+
+  const clickData = {
+    clickType: "rightClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "UPDATE_BOARD",
+    payload: testGameboard
+  });
+  expect(target.isFlagged).toBe(true);
+  expect(target.isClicked).toBe(false);
+  expect(target.isQuestioned).toBe(false);
+});
+
+test("Shoud update a cell marked as isFlagged to isQuestioned when right clicked", () => {
+  const target = testGameboard.board[0][5];
+  target.isFlagged = true;
+
+  const dispatch = jest.fn();
+
+  const clickData = {
+    clickType: "rightClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "UPDATE_BOARD",
+    payload: testGameboard
+  });
+  expect(target.isQuestioned).toBe(true);
+  expect(target.isClicked).toBe(false);
+  expect(target.isFlagged).toBe(false);
+});
+
+test("Should update a cell marked as question to cleared when right clicked", () => {
+  const target = testGameboard.board[0][6];
+  target.isQuestioned = true;
+
+  const dispatch = jest.fn();
+
+  const clickData = {
+    clickType: "rightClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(dispatch).toHaveBeenCalledTimes(1);
+  expect(dispatch).toHaveBeenCalledWith({
+    type: "UPDATE_BOARD",
+    payload: testGameboard
+  });
+  expect(target.isQuestioned).toBe(false);
+  expect(target.isClicked).toBe(false);
+  expect(target.isFlagged).toBe(false);
+});
+
+test("Should not update a cell that is already marked isClicked on right click", () => {
+  const target = testGameboard.board[0][7];
+  target.isClicked = true;
+
+  const dispatch = jest.fn();
+
+  const clickData = {
+    clickType: "rightClick",
+    board: testGameboard,
+    target,
+    dispatch
+  };
+  handleBoardClick(clickData);
+  expect(dispatch).toHaveBeenCalledTimes(0);
 });

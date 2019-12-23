@@ -15,5 +15,15 @@ export const reducer = (state, action) => {
         ...state,
         yCount: action.payload
       };
+    case "UPDATE_BOARD":
+      return {
+        ...state,
+        board: action.payload
+      };
+    case "GAME_OVER":
+      return {
+        ...state,
+        isGameOver: action.payload
+      };
   }
 };
