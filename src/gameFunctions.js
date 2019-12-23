@@ -4,6 +4,7 @@ class Board {
     this.yCount = yCount;
     this.mineCount = mineCount;
     this.board = this.createBoard();
+    this.assignCellNeighbors();
     this.minePositions = this.createMinePositions();
     this.addMinesToBoard();
   }
@@ -46,46 +47,42 @@ class Board {
   addMinesToBoard() {
     this.minePositions.forEach(minePosition => {
       const [xCoord, yCoord] = minePosition;
-      this.board[xCoord][yCoord].isMine = true;
-      this.updateTouchingCountsFromMinePosition(xCoord, yCoord);
+      const mineCell = this.board[xCoord][yCoord];
+      mineCell.isMine = true;
+      this.updateTouchingCountsFromMinePosition(mineCell);
     });
   }
 
-  updateTouchingCountsFromMinePosition(x, y) {
-    if (this.board[x - 1] !== undefined) {
-      this.board[x - 1][y].touching = this.board[x - 1][y].touching + 1;
-      if (this.board[y - 1] !== undefined) {
-        this.board[x - 1][y - 1].touching =
-          this.board[x - 1][y - 1].touching + 1;
-      }
-      if (this.board[x - 1][y + 1] !== undefined) {
-        this.board[x - 1][y + 1].touching =
-          this.board[x - 1][y + 1].touching + 1;
-      }
-    }
-    if (this.board[x][y + 1] !== undefined) {
-      this.board[x][y + 1].touching = this.board[x][y + 1].touching + 1;
-    }
-    if (this.board[x][y - 1] !== undefined) {
-      this.board[x][y - 1].touching = this.board[x][y - 1].touching + 1;
-    }
-    if (this.board[x + 1] !== undefined) {
-      this.board[x + 1][y].touching = this.board[x + 1][y].touching + 1;
-      if (this.board[x + 1][y - 1] !== undefined) {
-        this.board[x + 1][y - 1].touching =
-          this.board[x + 1][y - 1].touching + 1;
-      }
-      if (this.board[x + 1][y + 1] !== undefined) {
-        this.board[x + 1][y + 1].touching =
-          this.board[x + 1][y + 1].touching + 1;
-      }
-    }
+  updateTouchingCountsFromMinePosition(cell) {
+    cell.neighbors.forEach(neighbor => neighbor.touching++);
+  }
+
+  assignCellNeighbors() {
+    this.board.forEach(row =>
+      row.forEach(cell => {
+        let [targetRow, targetCol] = cell.id.split("");
+        targetRow = Number(targetRow);
+        targetCol = Number(targetCol);
+        cell.neighbors = [];
+        for (let row = targetRow - 1; row < targetRow + 2; row++) {
+          for (let col = targetCol - 1; col < targetCol + 2; col++) {
+            if (
+              this.board[row] &&
+              this.board[row][col] &&
+              this.board[row][col] !== cell
+            ) {
+              cell.neighbors.push(this.board[row][col]);
+            }
+          }
+        }
+      })
+    );
   }
 }
 
 function handleLeftClick(board, target, dispatch) {
   if (!target.isMine && target.touching === 0) {
-    clearZeroes(board, target, dispatch);
+    clearZeroes(target);
     dispatch({ type: "UPDATE_BOARD", payload: board });
     return;
   }
@@ -125,27 +122,15 @@ function handleBoardClick(clickData) {
     : handleRightClick(board, target, dispatch);
 }
 
-function clearZeroes(board, target) {
+function clearZeroes(target) {
   const currentIsZero = target.touching === 0;
+  target.isClicked = true;
   if (!currentIsZero) return;
-  let [targetRow, targetCol] = target.id.split("");
-  targetRow = Number(targetRow);
-  targetCol = Number(targetCol);
-  for (let row = targetRow - 1; row < targetRow + 2; row++) {
-    for (let col = targetCol - 1; col < targetCol + 2; col++) {
-      if (
-        board.board[row] &&
-        board.board[row][col] &&
-        !board.board[row][col].isClicked &&
-        !board.board[row][col].isMine
-      ) {
-        board.board[row][col].isClicked = true;
-        if (currentIsZero) {
-          clearZeroes(board, board.board[row][col]);
-        }
-      }
+  target.neighbors.forEach(neighbor => {
+    if (!neighbor.isClicked) {
+      clearZeroes(neighbor);
     }
-  }
+  });
 }
 
 module.exports = {
