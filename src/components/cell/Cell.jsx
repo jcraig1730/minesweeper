@@ -18,7 +18,7 @@ export default function Cell({ cellData }) {
   };
 
   const handleClick = e => {
-    const [rowStr, columnStr] = e.currentTarget.id.split("");
+    const [rowStr, columnStr] = e.currentTarget.id.split("x");
     const target = board.board[Number(rowStr)][Number(columnStr)];
     const clickType = e.type === "click" ? "leftClick" : "rightClick";
     handleBoardClick({ clickType, board, target, dispatch });

@@ -8,12 +8,12 @@ export default function App() {
   const [{ mineCount, xCount, yCount, board }, dispatch] = useStateValue();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    const newBoard = new Gameboard(10, 10, 10);
+    const newBoard = new Gameboard(20, 20, 100);
     dispatch({ type: "UPDATE_BOARD", payload: newBoard });
     setIsLoading(false);
   }, []);
   return (
-    <div>
+    <div onMouseEnter={() => (document.body.style.cursor = "default")}>
       <Smiley />
       {isLoading ? "loading..." : <Board board={board} />}
     </div>

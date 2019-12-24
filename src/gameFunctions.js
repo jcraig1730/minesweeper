@@ -23,11 +23,12 @@ class Board {
           isFlagged: false,
           isQuestioned: false,
           isClicked: false,
-          id: String(row) + String(col)
+          id: String(row) + "x" + String(col)
         });
         col++;
       }
     }
+    console.log(board);
     return board;
   }
 
@@ -63,7 +64,7 @@ class Board {
   assignCellNeighbors() {
     this.board.forEach(row =>
       row.forEach(cell => {
-        let [targetRow, targetCol] = cell.id.split("");
+        let [targetRow, targetCol] = cell.id.split("x");
         targetRow = Number(targetRow);
         targetCol = Number(targetCol);
         cell.neighbors = [];

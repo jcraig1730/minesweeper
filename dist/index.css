@@ -1,8 +1,8 @@
 html {
-  height: 95vh;
-  width: 95vw;
+  max-width: 95vw;
 }
 body {
+  background: #444;
   display: flex;
   height: 100%;
   width: 100%;
