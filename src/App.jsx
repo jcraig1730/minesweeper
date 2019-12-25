@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Board from "./components/board/Board.jsx";
 import Smiley from "./components/smiley/Smiley.jsx";
 import Options from "./components/options/Options.jsx";
+import Stats from "./components/stats/Stats.jsx";
 import { useStateValue } from "./state/AppState.jsx";
 import { Gameboard } from "./gameFunctions.js";
 import styles from "./app.css";
@@ -23,7 +24,10 @@ export default function App() {
         <Smiley />
         {isLoading ? "loading..." : <Board board={board} />}
       </div>
-      <Options />
+      <div className={styles.infoWrapper}>
+        <Stats />
+        <Options />
+      </div>
     </div>
   );
 }

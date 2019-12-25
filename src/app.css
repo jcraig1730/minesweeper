@@ -1,3 +1,11 @@
 .wrapper {
   display: flex;
 }
+
+.infoWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 30px;
+}

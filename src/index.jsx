@@ -12,7 +12,7 @@ const initialState = {
   isGameOver: false,
   isWinner: false,
   isMouseDown: false,
-  result: ""
+  flagsPlaced: 0
 };
 
 ReactDOM.render(
